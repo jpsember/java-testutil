@@ -1,0 +1,11 @@
+{      "bytesToIntsBigEndian" : 1297,
+    "bytesToIntsLittleEndian" : 1297,
+      "bytesToLongsBigEndian" : 5316,
+     "bytesToShortsBigEndian" : 7673,
+  "bytesToShortsLittleEndian" : 7673,
+         "constructByteArray" : 2571,
+                "encodeBytes" : 2571,
+       "extractIntsFromBytes" : 2785,
+      "longsToBytesBigEndian" : 8534,
+          "testBytesToShorts" : 3994
+}
