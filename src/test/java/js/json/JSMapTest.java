@@ -52,4 +52,11 @@ public class JSMapTest extends MyTestCase {
     assertMessage(m);
   }
 
+  @Test
+  public void parseNullValueInMap() {
+    String content = "{\"x\":[],\"y\":\"hello\",\"z\":null}";
+    JSMap m = new JSMap(content);
+    assertMessage(m.prettyPrint());
+  }
+
 }
