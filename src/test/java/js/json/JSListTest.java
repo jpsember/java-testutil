@@ -24,6 +24,9 @@
  **/
 package js.json;
 
+import static js.base.Tools.*;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import js.geometry.Matrix;
@@ -37,7 +40,7 @@ public class JSListTest extends MyTestCase {
     lst.lock();
     lst.add("b");
   }
-  
+
   @Test
   public void putDataObjects() {
     JSList list = new JSList();
@@ -46,4 +49,43 @@ public class JSListTest extends MyTestCase {
     assertMessage(list.prettyPrint());
   }
 
+  @Test
+  public void equalityIntegers() {
+    JSList m1 = list().add(100L).add(100);
+    JSList m2 = list().add(100).add(100);
+    assertEquals(m1, m2);
+  }
+
+  @Test
+  public void inequalityIntegers() {
+    JSList m1 = list().add(100L).add(100);
+    JSList m2 = list().add(101L).add(100);
+    assertNotEquals(m1, m2);
+  }
+
+  @Test
+  public void equalityIntegersNested() {
+    JSList m1 = list().add(100L).add(100);
+    JSList m2 = list().add(100).add(100);
+    JSList m3 = list().add(m1);
+    JSList m4 = list().add(m2);
+    assertEquals(m3, m4);
+  }
+
+  @Test
+  public void equalityFloats() {
+    JSList m1 = list().add(100.0).add(100f);
+    JSList m2 = list().add(100f).add(100f);
+    assertEquals(m1, m2);
+
+  }
+
+  @Test
+  public void equalityFloatsNested() {
+    JSList m1 = list().add(100.0).add(100f);
+    JSList m2 = list().add(100f).add(100f);
+    JSList m3 = list().add(m1);
+    JSList m4 = list().add(m2);
+    assertEquals(m3, m4);
+  }
 }

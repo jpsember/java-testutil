@@ -25,6 +25,7 @@
 package js.json;
 
 import static js.base.Tools.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -59,4 +60,35 @@ public class JSMapTest extends MyTestCase {
     assertMessage(m.prettyPrint());
   }
 
+  @Test
+  public void equalityIntegers() {
+    JSMap m1 = map().put("a", 100L).put("b", 100);
+    JSMap m2 = map().put("a", 100).put("b", 100);
+    assertEquals(m1, m2);
+  }
+
+  @Test
+  public void equalityIntegersNested() {
+    JSMap m1 = map().put("a", 100L).put("b", 100);
+    JSMap m2 = map().put("a", 100).put("b", 100);
+    JSMap m3 = map().put("m", m1);
+    JSMap m4 = map().put("m", m2);
+    assertEquals(m3, m4);
+  }
+
+  @Test
+  public void equalityFloats() {
+    JSMap m1 = map().put("a", 100.0).put("b", 100f);
+    JSMap m2 = map().put("a", 100f).put("b", 100f);
+    assertEquals(m1, m2);
+  }
+
+  @Test
+  public void equalityFloatsNested() {
+    JSMap m1 = map().put("a", 100.0).put("b", 100f);
+    JSMap m2 = map().put("a", 100f).put("b", 100f);
+    JSMap m3 = map().put("m", m1);
+    JSMap m4 = map().put("m", m2);
+    assertEquals(m3, m4);
+  }
 }
