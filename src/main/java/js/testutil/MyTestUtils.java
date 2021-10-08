@@ -25,6 +25,7 @@
 package js.testutil;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -32,6 +33,8 @@ import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import js.base.DateTimeTools;
 import js.data.DataUtil;
@@ -239,7 +242,7 @@ public final class MyTestUtils {
     Files.registerFiletypeHashFn("json", (f) -> {
       return JSMap.from(f);
     });
-
+    Files.registerFiletypeHashFn("zip", (f) -> calcHashForZip(f));
     // Attempt to load classes (which may not be available) so they can install 
     // additional hash functions
     try {
@@ -271,6 +274,19 @@ public final class MyTestUtils {
    */
   public static void waitFor(BooleanSupplier supplier) {
     waitFor(2000, supplier);
+  }
+
+  private static int calcHashForZip(File zipFile) {
+    try {
+      JSMap m = map();
+      m.put("", zipFile.getName());
+      ZipFile zipFileObj = new ZipFile(zipFile);
+      for (ZipEntry entry : Files.getZipEntries(zipFileObj))
+        m.put(entry.getName(), entry.getCrc());
+      return m.hashCode();
+    } catch (IOException e) {
+      throw Files.asFileException(e);
+    }
   }
 
 }
