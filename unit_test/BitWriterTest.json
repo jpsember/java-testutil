@@ -1,8 +1,8 @@
-{       "crossIntBoundary" : 2398,
-            "multipleBits" : 4300,
-             "singleFalse" : 9467,
-              "singleTrue" : 8820,
-  "testMaskOutOfRangeBits" : 3667,
-         "wordExceedsSize" : 9729,
-        "wordExceedsSize2" : 5467
+{       "crossIntBoundary" : 6438,
+            "multipleBits" : 1482,
+             "singleFalse" : 1149,
+              "singleTrue" : 8442,
+  "testMaskOutOfRangeBits" : 2501,
+         "wordExceedsSize" : 6541,
+        "wordExceedsSize2" : 6041
 }

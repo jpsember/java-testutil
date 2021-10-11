@@ -158,7 +158,8 @@ final class FileManager {
       sc.arg(fileRefAbs, fileRecAbs);
       pr();
       pr(sc.systemOut());
-      if (sc.exitCode() > 1)
+      // It is returning 2 if it encounters binary files (e.g. xxx.zip), which is problematic
+      if (sc.exitCode() > 2)
         badState("System call failed:", INDENT, sc);
     }
   }
