@@ -220,7 +220,10 @@ public final class MyTestUtils {
       }
       Object value = "?";
       if (f.isDirectory()) {
-        value = auxDirSummary(f, ignored, calculateFileHashes);
+        JSMap subdirSummary = auxDirSummary(f, ignored, calculateFileHashes);
+        if (subdirSummary.isEmpty())
+          continue;
+        value = subdirSummary;
       } else if (calculateFileHashes) {
         value = Files.tryHash(f);
         if (value == null)
