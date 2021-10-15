@@ -28,11 +28,8 @@ import org.junit.Test;
 
 import js.file.BackupManager;
 import js.file.DirWalk;
-import js.file.Files;
 import js.json.JSMap;
 import js.testutil.MyTestCase;
-
-import static js.base.Tools.*;
 
 import java.io.File;
 
@@ -91,17 +88,6 @@ public class BackupManagerTest extends MyTestCase {
     b().backupAndDelete(sampleDir(), "h.txt");
     assertGenerated();
   }
-
-  private Files files() {
-    if (mFiles == null) {
-      loadTools();
-      mFiles = new Files();
-      mFiles.setVerbose(verbose());
-    }
-    return mFiles;
-  }
-
-  private Files mFiles;
 
   private BackupManager b() {
     if (mBackupManager == null) {

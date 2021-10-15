@@ -271,7 +271,7 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
   }
 
   public final void generateMessage(String filename, Object messageObject) {
-    Files.S.writeString(generatedFile(filename), messageObject.toString());
+    sysFiles().writeString(generatedFile(filename), messageObject.toString());
   }
 
   private static final String GENERATED_MESSAGE_NAME = "message.txt";
@@ -408,7 +408,7 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
 
       humanCopy = Files.getDesktopFile("ub_inspections/" + className + "_" + sourceDir.getName());
     }
-    Files.S.mkdirs(humanCopy);
+    sysFiles().mkdirs(humanCopy);
 
     Set<String> filesCopied = hashSet();
     Set<String> subdirSet = hashSet();
@@ -417,12 +417,12 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
       String dirs = nullToEmpty(f.getParent());
       if (subdirSet.add(dirs)) {
         File newDir = new File(humanCopy, dirs);
-        Files.S.mkdirs(newDir);
+        sysFiles().mkdirs(newDir);
       }
       String relPath = f.getPath();
       filesCopied.add(relPath);
       try {
-        Files.S.copyFile(w.abs(f), new File(humanCopy, relPath));
+        sysFiles().copyFile(w.abs(f), new File(humanCopy, relPath));
       } catch (FileException e) {
         // A background task (e.g. dashboard cache maintenance) may be deleting files while we're copying them
         if (!(e.getCause() instanceof FileNotFoundException)) {
@@ -440,7 +440,7 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
         if (mPreservedFilenamesSet.contains(f.getName()))
           continue;
         alert("Deleted stale file(s) within saveHuman()");
-        Files.S.deleteFile(w.abs(f));
+        sysFiles().deleteFile(w.abs(f));
       }
     }
   }
@@ -488,15 +488,15 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
 
   private static String HASHCODE_FILENAME = "_hashcode_.json";
 
-  private static void writeReferenceCopy(File directory, int expectedHash) {
+  private void writeReferenceCopy(File directory, int expectedHash) {
     File refDir = referenceDirectory(directory);
     File hashCodeFile = new File(refDir, HASHCODE_FILENAME);
 
     if (!hashCodeFile.exists() || JSMap.from(hashCodeFile).getInt("hashcode") != expectedHash
         || expectedHash < 0) {
-      Files.S.deleteDirectory(refDir);
-      Files.S.copyDirectory(directory, refDir);
-      Files.S.writeString(hashCodeFile, map().put("hashcode", expectedHash).toString());
+      sysFiles().deleteDirectory(refDir);
+      sysFiles().copyDirectory(directory, refDir);
+      sysFiles().writeString(hashCodeFile, map().put("hashcode", expectedHash).toString());
     }
   }
 
@@ -670,6 +670,19 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
     return redirectedContent;
   }
 
+  public final Files files() {
+    if (mFiles == null) {
+      mFiles = new Files();
+      mFiles.setVerbose(verbose());
+    }
+    return mFiles;
+  }
+
+  private Files sysFiles() {
+    return Files.S;
+  }
+
+  private Files mFiles;
   private PrintStream mOriginalSystemOut;
   private File mRedirectedGenFile;
   private FileOutputStream mRedirectedOutputStream;
