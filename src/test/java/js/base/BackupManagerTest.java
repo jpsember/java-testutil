@@ -32,6 +32,7 @@ import js.json.JSMap;
 import js.testutil.MyTestCase;
 
 import java.io.File;
+import static js.base.Tools.*;
 
 public class BackupManagerTest extends MyTestCase {
 
