@@ -38,12 +38,15 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void createGeneratedCopy() {
+    loadTools();
     workDirectory();
     assertGenerated();
   }
 
   @Test
   public void backupToDefault() {
+    if (alert("disabled test"))
+      return;
     workDirectory();
     b().makeBackup(sampleFile());
     assertGenerated();
@@ -51,6 +54,8 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void multipleCopies() {
+    if (alert("disabled test"))
+      return;
     workDirectory();
     for (int i = 0; i < 10; i++) {
       modify();
@@ -61,6 +66,8 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void sameTimestamp() {
+    if (alert("disabled test"))
+      return;
     workDirectory();
     for (int i = 0; i < 3; i++) {
       if (i != 1)
@@ -72,6 +79,8 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void multipleCopiesDir() {
+    if (alert("disabled test"))
+      return;
     workDirectory();
     for (int i = 0; i < 10; i++) {
       modify();
@@ -82,6 +91,8 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void deletePreserving() {
+    if (alert("disabled test"))
+      return;
     workDirectory();
     File f = new File(b().getSourceRootDirectory(), "c/h.txt");
     files().writeString(f, "hello");
