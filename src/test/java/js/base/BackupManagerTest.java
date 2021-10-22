@@ -33,6 +33,7 @@ import js.testutil.MyTestCase;
 
 import java.io.File;
 import static js.base.Tools.*;
+import static org.junit.Assert.*;
 
 public class BackupManagerTest extends MyTestCase {
 
@@ -45,8 +46,6 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void backupToDefault() {
-    if (alert("disabled test"))
-      return;
     workDirectory();
     b().makeBackup(sampleFile());
     assertGenerated();
@@ -54,8 +53,6 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void multipleCopies() {
-    if (alert("disabled test"))
-      return;
     workDirectory();
     for (int i = 0; i < 10; i++) {
       modify();
@@ -66,8 +63,6 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void sameTimestamp() {
-    if (alert("disabled test"))
-      return;
     workDirectory();
     for (int i = 0; i < 3; i++) {
       if (i != 1)
@@ -79,8 +74,6 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void multipleCopiesDir() {
-    if (alert("disabled test"))
-      return;
     workDirectory();
     for (int i = 0; i < 10; i++) {
       modify();
@@ -91,19 +84,40 @@ public class BackupManagerTest extends MyTestCase {
 
   @Test
   public void deletePreserving() {
-    if (alert("disabled test"))
-      return;
     workDirectory();
-    File f = new File(b().getSourceRootDirectory(), "c/h.txt");
+    File f = new File(sampleDir(), "h.txt");
     files().writeString(f, "hello");
     setLastModified(f, 3000);
     b().backupAndDelete(sampleDir(), "h.txt");
     assertGenerated();
   }
 
+  @Test
+  public void deletePreserving2() {
+    workDirectory();
+    File f = new File(sampleDir(), "h.txt");
+    files().writeString(f, "hello");
+    setLastModified(f, 3000);
+    b().backupAndDelete(new File(workDirectory(), "source"), "c/h.txt");
+    assertGenerated();
+  }
+
+  @Test
+  public void attemptBackupFileOutsideBaseDir() {
+    workDirectory();
+    File outsideFile = generatedFile("outside.txt");
+    files().writeString(outsideFile, "hello");
+    try {
+      b().makeBackup(outsideFile);
+    } catch (Throwable t) {
+      log(t);
+      assertTrue(t.getMessage().contains("file is not strictly"));
+    }
+  }
+
   private BackupManager b() {
     if (mBackupManager == null) {
-      mBackupManager = new BackupManager(files(), generatedFile("source"));
+      mBackupManager = new BackupManager(files(), generatedFile("work"));
       mBackupManager.setVerbose(verbose());
     }
     return mBackupManager;
@@ -111,16 +125,25 @@ public class BackupManagerTest extends MyTestCase {
 
   private BackupManager mBackupManager;
 
+  /**
+   * Create a copy of the test data directory, one we can safely modify for the
+   * test.
+   * 
+   * We will construct a directory named "work", and place the copied within it
+   * as a subdirectory named "source". The manager can place its backups within
+   * a sibling subdirectory named _SKIP_backups.
+   */
   private File workDirectory() {
     if (mWork == null) {
       File source = testDataDir();
-      File gen = generatedFile("source");
+      File work = generatedFile("work");
+      File gen = new File(work, "source");
       files().copyDirectory(source, gen);
       // Set the last modified time for all test files to a fixed value
-      for (File f : new DirWalk(gen).files()) {
+      for (File f : new DirWalk(work).files()) {
         setLastModified(f, 0);
       }
-      mWork = gen;
+      mWork = work;
     }
     return mWork;
   }
@@ -130,11 +153,11 @@ public class BackupManagerTest extends MyTestCase {
   }
 
   private File sampleDir() {
-    return new File("c");
+    return new File(workDirectory(), "source/c");
   }
 
   private void modify() {
-    File bf = new File(b().getSourceRootDirectory(), sampleFile().toString());
+    File bf = sampleFile();
     if (!bf.exists())
       return;
     JSMap m = JSMap.from(bf);
