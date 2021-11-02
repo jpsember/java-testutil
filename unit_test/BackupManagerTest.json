@@ -2,7 +2,9 @@
   "createGeneratedCopy" : 9781,
      "deletePreserving" : 9351,
     "deletePreserving2" : 5331,
-       "multipleCopies" : 3055,
-    "multipleCopiesDir" : 1870,
-        "sameTimestamp" : 7807
+       "multipleCopies" : 5935,
+    "multipleCopiesDir" : 8468,
+        "sameTimestamp" : 7115,
+  "timeNumberOfBackups" : 4938,
+  "trimNumberOfBackups" : 2539
 }

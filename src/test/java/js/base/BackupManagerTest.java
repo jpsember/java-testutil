@@ -27,7 +27,6 @@ package js.base;
 import org.junit.Test;
 
 import js.file.BackupManager;
-import js.file.DirWalk;
 import js.json.JSMap;
 import js.testutil.MyTestCase;
 
@@ -55,6 +54,7 @@ public class BackupManagerTest extends MyTestCase {
   public void multipleCopies() {
     workDirectory();
     for (int i = 0; i < 10; i++) {
+      setCurrentTime(i * 1000);
       modify();
       b().makeBackup(sampleFile());
     }
@@ -65,6 +65,7 @@ public class BackupManagerTest extends MyTestCase {
   public void sameTimestamp() {
     workDirectory();
     for (int i = 0; i < 3; i++) {
+      setCurrentTime(i * 1000);
       if (i != 1)
         modify();
       b().makeBackup(sampleFile());
@@ -76,6 +77,7 @@ public class BackupManagerTest extends MyTestCase {
   public void multipleCopiesDir() {
     workDirectory();
     for (int i = 0; i < 10; i++) {
+      setCurrentTime(i * 1000);
       modify();
       b().makeBackup(sampleDir());
     }
@@ -87,7 +89,7 @@ public class BackupManagerTest extends MyTestCase {
     workDirectory();
     File f = new File(sampleDir(), "h.txt");
     files().writeString(f, "hello");
-    setLastModified(f, 3000);
+    setCurrentTime(3000);
     b().backupAndDelete(sampleDir(), "h.txt");
     assertGenerated();
   }
@@ -97,7 +99,7 @@ public class BackupManagerTest extends MyTestCase {
     workDirectory();
     File f = new File(sampleDir(), "h.txt");
     files().writeString(f, "hello");
-    setLastModified(f, 3000);
+    setCurrentTime(3000);
     b().backupAndDelete(new File(workDirectory(), "source"), "c/h.txt");
     assertGenerated();
   }
@@ -115,10 +117,23 @@ public class BackupManagerTest extends MyTestCase {
     }
   }
 
+  @Test
+  public void trimNumberOfBackups() {
+    workDirectory();
+    for (int i = 0; i < 12; i++) {
+      setCurrentTime(i * 1000);
+      File f = new File(sampleDir(), "h.txt");
+      files().writeString(f, "i=" + i);
+      b().backupAndDelete(new File(workDirectory(), "source"), "c/h.txt");
+    }
+    assertGenerated();
+  }
+
   private BackupManager b() {
     if (mBackupManager == null) {
       mBackupManager = new BackupManager(files(), generatedFile("work"));
       mBackupManager.setVerbose(verbose());
+      setCurrentTime(0);
     }
     return mBackupManager;
   }
@@ -139,10 +154,6 @@ public class BackupManagerTest extends MyTestCase {
       File work = generatedFile("work");
       File gen = new File(work, "source");
       files().copyDirectory(source, gen);
-      // Set the last modified time for all test files to a fixed value
-      for (File f : new DirWalk(work).files()) {
-        setLastModified(f, 0);
-      }
       mWork = work;
     }
     return mWork;
@@ -164,13 +175,11 @@ public class BackupManagerTest extends MyTestCase {
     mVersion++;
     m.put("version", mVersion);
     files().writePretty(bf, m);
-    // Artifically set the modified time two full seconds ahead from its old position
-    setLastModified(bf, 2000 * mVersion);
   }
 
-  private void setLastModified(File f, long offset) {
+  private void setCurrentTime(long offset) {
     final long START_TIME = 1607380000000L;
-    f.setLastModified(START_TIME + offset);
+    b().setCurrentTime(START_TIME + offset);
   }
 
   private int mVersion;
