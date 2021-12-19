@@ -85,26 +85,6 @@ public class BackupManagerTest extends MyTestCase {
   }
 
   @Test
-  public void deletePreserving() {
-    workDirectory();
-    File f = new File(sampleDir(), "h.txt");
-    files().writeString(f, "hello");
-    setCurrentTime(3000);
-    b().backupAndDelete(sampleDir(), "h.txt");
-    assertGenerated();
-  }
-
-  @Test
-  public void deletePreserving2() {
-    workDirectory();
-    File f = new File(sampleDir(), "h.txt");
-    files().writeString(f, "hello");
-    setCurrentTime(3000);
-    b().backupAndDelete(new File(workDirectory(), "source"), "c/h.txt");
-    assertGenerated();
-  }
-
-  @Test
   public void attemptBackupFileOutsideBaseDir() {
     workDirectory();
     File outsideFile = generatedFile("outside.txt");
@@ -118,13 +98,13 @@ public class BackupManagerTest extends MyTestCase {
   }
 
   @Test
-  public void trimNumberOfBackups() {
+  public void trimNumberOfBackups() { 
     workDirectory();
     for (int i = 0; i < 12; i++) {
       setCurrentTime(i * 1000);
       File f = new File(sampleDir(), "h.txt");
       files().writeString(f, "i=" + i);
-      b().backupAndDelete(new File(workDirectory(), "source"), "c/h.txt");
+      b().backupAndDelete(new File(workDirectory(), "source"));
     }
     assertGenerated();
   }
