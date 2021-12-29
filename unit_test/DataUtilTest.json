@@ -3,5 +3,5 @@
       "bytesToLongsBigEndian" : 6848,
      "bytesToShortsBigEndian" : 8955,
   "bytesToShortsLittleEndian" : 8955,
-         "constructByteArray" : 5433
+         "constructByteArray" : 4815
 }
