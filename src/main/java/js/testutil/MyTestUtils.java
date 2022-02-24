@@ -25,7 +25,6 @@
 package js.testutil;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -242,10 +241,10 @@ public final class MyTestUtils {
 
   private static void installHashFunctions() {
     Files.registerFiletypeHashFn("txt", (f) -> Files.readString(f));
-    Files.registerFiletypeHashFn("json", (f) -> {
+    Files.registerFiletypeHashFn(Files.EXT_JSON, (f) -> {
       return JSMap.from(f);
     });
-    Files.registerFiletypeHashFn("zip", (f) -> calcHashForZip(f));
+    Files.registerFiletypeHashFn(Files.EXT_ZIP, (f) -> calcHashForZip(f));
     // Attempt to load classes (which may not be available) so they can install 
     // additional hash functions
     try {
@@ -280,16 +279,12 @@ public final class MyTestUtils {
   }
 
   private static int calcHashForZip(File zipFile) {
-    try {
-      JSMap m = map();
-      m.put("", zipFile.getName());
-      ZipFile zipFileObj = new ZipFile(zipFile);
-      for (ZipEntry entry : Files.getZipEntries(zipFileObj))
-        m.put(entry.getName(), entry.getCrc());
-      return m.hashCode();
-    } catch (IOException e) {
-      throw Files.asFileException(e);
-    }
+    JSMap m = map();
+    m.put("", zipFile.getName());
+    ZipFile zipFileObj = Files.zipFile(zipFile);
+    for (ZipEntry entry : Files.getZipEntries(zipFileObj))
+      m.put(entry.getName(), entry.getCrc());
+    return m.hashCode();
   }
 
 }

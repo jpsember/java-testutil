@@ -528,7 +528,7 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
       File fileRefAbs = new File(referenceDirectory, fileReceived.getPath());
 
       if (fileRefAbs.exists() && fileRecAbs.exists()
-          && Arrays.equals(Files.toByteArray(fileRecAbs), Files.toByteArray(fileRefAbs)))
+          && Arrays.equals(Files.toByteArray(fileRecAbs, null), Files.toByteArray(fileRefAbs, null)))
         continue;
 
       pr(CR,
@@ -575,7 +575,7 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
     if (object instanceof File) {
       File file = (File) object;
       mObjectDescr = file.getName();
-      byte[] fileContents = Files.toByteArray(file);
+      byte[] fileContents = Files.toByteArray(file, null);
       object = DataUtil.hashOf(fileContents);
     }
 

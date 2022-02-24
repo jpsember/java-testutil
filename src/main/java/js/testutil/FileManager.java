@@ -121,7 +121,7 @@ final class FileManager {
       File fileRefAbs = new File(refDir, fileReceived.getPath());
 
       if (fileRefAbs.exists() && fileRecAbs.exists()
-          && Arrays.equals(Files.toByteArray(fileRecAbs), Files.toByteArray(fileRefAbs)))
+          && Arrays.equals(Files.toByteArray(fileRecAbs, null), Files.toByteArray(fileRefAbs, null)))
         continue;
 
       pr(CR,
