@@ -153,7 +153,6 @@ public class ToolsTest extends MyTestCase {
 
   @Test
   public void trimTest() {
-    rv();
     JSMap json = map();
 
     String whiteSpaceChars = "         \n\n\n\t";
