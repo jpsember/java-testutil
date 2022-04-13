@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import js.json.JSMap;
 import js.testutil.MyTestCase;
 
 import static js.base.Tools.*;
@@ -148,6 +149,41 @@ public class ToolsTest extends MyTestCase {
       sb.append(word);
     }
     assertMessage(sb);
+  }
+
+  @Test
+  public void trimTest() {
+    rv();
+    JSMap json = map();
+
+    String whiteSpaceChars = "         \n\n\n\t";
+    String sampleText = "a ab abc abcd abcdefghijklmno";
+
+    for (int sampleNumber = 0; sampleNumber < 50; sampleNumber++) {
+      StringBuilder sb = new StringBuilder();
+      for (int part = 0; part < 3; part++) {
+        if (part == 1) {
+          if (random().nextInt(3) == 0) continue;
+          int textLength = random().nextInt(8) + 1;
+          int textStart = random().nextInt(sampleText.length() - textLength);
+          String textExpr = sampleText.substring(textStart, textStart + textLength).trim();
+          sb.append(textExpr);
+        } else {
+          for (int i = random().nextInt(12); i > 0; i--) {
+            char wsChar = whiteSpaceChars.charAt(random().nextInt(whiteSpaceChars.length()));
+            sb.append(wsChar);
+          }
+        }
+      }
+      String expr = sb.toString();
+      json.putNumbered("Sample",expr);
+      json.putNumbered("Left",trimLeft(expr));
+      json.putNumbered("Right",trimRight(expr));
+      json.putNumbered("Both",expr.trim());
+      json.putNumbered("--------------------------------");
+    }
+    generateMessage(json.prettyPrint());
+    assertGenerated();
   }
 
 }

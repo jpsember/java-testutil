@@ -1,5 +1,6 @@
 {                  "callPr" : 1295,
   "insertStringToFrontTest" : 3213,
                 "splitTest" : 2238,
-                  "tabTest" : 6883
+                  "tabTest" : 6883,
+                 "trimTest" : 4346
 }
