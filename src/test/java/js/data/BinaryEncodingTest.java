@@ -28,10 +28,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import js.data.BitReader;
-import js.data.BitWriter;
-import js.data.DataUtil;
-import js.data.IntArray;
 import js.testutil.MyTestCase;
 
 import static js.base.Tools.*;
