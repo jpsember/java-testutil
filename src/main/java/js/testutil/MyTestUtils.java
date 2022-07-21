@@ -240,7 +240,7 @@ public final class MyTestUtils {
   private static File sUnitTestDirectory = new File("unit_test");
 
   private static void installHashFunctions() {
-    Files.registerFiletypeHashFn("txt", (f) -> Files.readString(f));
+    Files.registerFiletypeHashFn(Files.EXT_TEXT, (f) -> Files.readString(f));
     Files.registerFiletypeHashFn(Files.EXT_JSON, (f) -> {
       return JSMap.from(f);
     });

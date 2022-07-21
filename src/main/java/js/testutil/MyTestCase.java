@@ -505,7 +505,7 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
     return new File(sourceDirectory.getParentFile(), sourceDirectory.getName() + "_REF");
   }
 
-  private static final Set<String> sTextFileExtensions = hashSetWith("txt", "json");
+  private static final Set<String> sTextFileExtensions = hashSetWith(Files.EXT_TEXT,Files.EXT_JSON);
 
   public static void showDiffs(File directory, boolean extended) {
     Set<File> relFiles = hashSet();

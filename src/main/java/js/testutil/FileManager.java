@@ -164,7 +164,8 @@ final class FileManager {
     }
   }
 
-  private static final Set<String> sTextFileExtensions = hashSetWith("txt", "json", "java", "dat");
+  private static final Set<String> sTextFileExtensions = hashSetWith(Files.EXT_TEXT, Files.EXT_JSON, "java",
+      "dat");
 
   /**
    * Called when the generated directory's hash has been successfully verified.
