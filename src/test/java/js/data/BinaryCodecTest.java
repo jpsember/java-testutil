@@ -42,6 +42,11 @@ public class BinaryCodecTest extends MyTestCase {
     doit();
   }
 
+  @Test
+  public void b() {
+    doit();
+  }
+
   private void doit() {
     doit(name() + ".json");
   }
@@ -52,7 +57,15 @@ public class BinaryCodecTest extends MyTestCase {
     JSMap m = JSMap.from(tf);
     byte[] encoded = BinaryCodec.encode(m);
     JSMap m2 = BinaryCodec.decode(encoded);
+
+    int origLen = m.toString().length();
+    int encodedLen = encoded.length;
+
+    JSMap res = map().put("original len", origLen).put("encoded len", encodedLen).put("ratio",
+        encodedLen / (float) origLen);
+    generateMessage(res.prettyPrint());
     assertEquals(m.toString(), m2.toString());
+    assertGenerated();
   }
 
 }
