@@ -55,8 +55,8 @@ public class BinaryCodecTest extends MyTestCase {
     loadTools();
     File tf = testFile(filename);
     JSMap m = JSMap.from(tf);
-    byte[] encoded = BinaryCodec.encode(m);
-    JSMap m2 = BinaryCodec.decode(encoded);
+    byte[] encoded = BinaryCodec.encode(m.toString());
+    JSMap m2 = new JSMap(BinaryCodec.decode(encoded));
 
     int origLen = m.toString().length();
     int encodedLen = encoded.length;
