@@ -41,8 +41,13 @@ public class ToolsTest extends MyTestCase {
   public void todoReport() {
     redirectSystemOut();
     todo("Here is a todo report", 72);
+    todo("Here is a second report");
+    todo("Here is a second report");
+    todo("Here is a third report");
     String output = restoreSystemOut();
+    log("output:",INDENT,output);
     assertTrue(output.startsWith("*** TODO: Here is a todo report 72 ("));
+    assertEquals(3,split(output, '\n').size());
   }
 
   @Test
