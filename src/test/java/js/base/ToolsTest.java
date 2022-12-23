@@ -45,9 +45,9 @@ public class ToolsTest extends MyTestCase {
     todo("Here is a second report");
     todo("Here is a third report");
     String output = restoreSystemOut();
-    log("output:",INDENT,output);
+    log("output:", INDENT, output);
     assertTrue(output.startsWith("*** TODO: Here is a todo report 72 ("));
-    assertEquals(3,split(output, '\n').size());
+    assertEquals(3, split(output.trim(), '\n').size());
   }
 
   @Test
@@ -167,7 +167,8 @@ public class ToolsTest extends MyTestCase {
       StringBuilder sb = new StringBuilder();
       for (int part = 0; part < 3; part++) {
         if (part == 1) {
-          if (random().nextInt(3) == 0) continue;
+          if (random().nextInt(3) == 0)
+            continue;
           int textLength = random().nextInt(8) + 1;
           int textStart = random().nextInt(sampleText.length() - textLength);
           String textExpr = sampleText.substring(textStart, textStart + textLength).trim();
@@ -180,10 +181,10 @@ public class ToolsTest extends MyTestCase {
         }
       }
       String expr = sb.toString();
-      json.putNumbered("Sample",expr);
-      json.putNumbered("Left",trimLeft(expr));
-      json.putNumbered("Right",trimRight(expr));
-      json.putNumbered("Both",expr.trim());
+      json.putNumbered("Sample", expr);
+      json.putNumbered("Left", trimLeft(expr));
+      json.putNumbered("Right", trimRight(expr));
+      json.putNumbered("Both", expr.trim());
       json.putNumbered("--------------------------------");
     }
     generateMessage(json.prettyPrint());
