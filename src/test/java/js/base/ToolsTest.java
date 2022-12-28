@@ -106,14 +106,14 @@ public class ToolsTest extends MyTestCase {
   @Test
   public void nullOrEmptyTest() {
     assertFalse(nullOrEmpty("abc"));
-    assertTrue(nullOrEmpty(null));
+    assertTrue(nullOrEmpty((String)null));
     assertTrue(nullOrEmpty(""));
   }
 
   @Test
   public void nonEmptyTest() {
     assertTrue(nonEmpty("abc"));
-    assertFalse(nonEmpty(null));
+    assertFalse(nonEmpty((String)null));
     assertFalse(nonEmpty(""));
   }
 
