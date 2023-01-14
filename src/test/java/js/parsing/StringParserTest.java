@@ -1,4 +1,4 @@
-package js.testutil.parsing;
+package js.parsing;
 
 import static js.base.Tools.*;
 
@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import js.testutil.MyTestCase;
 import js.json.JSMap;
-import js.parsing.StringParser;
 
 public class StringParserTest extends MyTestCase {
 
