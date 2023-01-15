@@ -30,7 +30,7 @@ public class GeoTreeTest extends MyTestCase {
 
     // Look for the exact stored points
     for (GeoObject obj : pts) {
-      List<SearchResult> found = tree().find(obj.location(), 0);
+      List<GeoSearchResult> found = tree().find(obj.location(), 0);
       m.putNumbered(obj.location().toString(), summary(found));
       checkState(found.size() == 1 && found.get(0).geoObject() == obj);
     }
@@ -40,7 +40,7 @@ public class GeoTreeTest extends MyTestCase {
     // Look for random points
     for (int i = 0; i < pts.size(); i++) {
       FPoint3 obj = randomPoint();
-      List<SearchResult> found = tree().find(obj, SEARCH_RADIUS * 6);
+      List<GeoSearchResult> found = tree().find(obj, SEARCH_RADIUS * 6);
       m.putNumbered(obj.toString(), summary(found));
     }
 
@@ -55,7 +55,7 @@ public class GeoTreeTest extends MyTestCase {
       FPoint3 off = new FPoint3((random().nextFloat() - 0.5f) * rad, (random().nextFloat() - 0.5f) * rad,
           (random().nextFloat() - 0.5f) * rad);
       FPoint3 loc2 = FPoint3.sum(loc, off);
-      List<SearchResult> found = tree().find(loc2, SEARCH_RADIUS);
+      List<GeoSearchResult> found = tree().find(loc2, SEARCH_RADIUS);
       m.putNumbered(loc2.toString(), summary(found));
     }
 
@@ -100,9 +100,9 @@ public class GeoTreeTest extends MyTestCase {
     }
   }
 
-  private static String summary(Iterable<SearchResult> res) {
+  private static String summary(Iterable<GeoSearchResult> res) {
     StringBuilder sb = new StringBuilder("[");
-    for (SearchResult r : res) {
+    for (GeoSearchResult r : res) {
       if (sb.length() > 1)
         sb.append(' ');
       sb.append(r.geoObject().location());

@@ -52,8 +52,6 @@ public final class GeoTree extends BaseObject {
     int dimension = 0;
     GeoNode node = mRootNode;
 
-    GeoNode parentNode = null;
-
     while (true) {
       log("depth:", depth, "node:", node);
       if (node.isLeaf()) {
@@ -65,38 +63,12 @@ public final class GeoTree extends BaseObject {
           if (c == obj) {
             node.removeObject(i);
             mSize--;
-
-            // If there is a parent node, and the population of this node has dropped to zero,
-            // replace the parent node with this one's sibling
-            
-            // !!! This won't work, since the bisector property that the sibling points have
-            // won't agree with the dimensionality of the parent node that they are moving to.
-            //
-            
-            if (node.population == 0 && parentNode != null) {
-              GeoNode sibling = parentNode.left;
-              if (sibling == node)
-                sibling = parentNode.right;
-              
-              pr("node is now empty:"
-                  ,node);
-              pr("parent:",parentNode);
-              pr("sibling:",sibling);
-              parentNode.left = sibling.left;
-              parentNode.right = sibling.right;
-              parentNode.population = sibling.population;
-              parentNode.points = sibling.points;
-              parentNode.value = sibling.value;
-              parentNode.debugId = sibling.debugId;
-              pr("parent now:",parentNode);
-                }
             return true;
           }
         }
         return false;
       }
 
-      parentNode = node;
       float targetC = coordinate(dimension, obj.location());
       if (targetC < node.value) {
         log("descending left");
@@ -115,42 +87,6 @@ public final class GeoTree extends BaseObject {
   public int size() {
     return mSize;
   }
-
-  /**
-   * Get a particular coordinate from a point
-   */
-  private static float coordinate(int dimension, FPoint3 location) {
-    switch (dimension) {
-    default: // 0 
-      return location.x;
-    case 1:
-      return location.y;
-    case 2:
-      return location.x;
-    }
-  }
-
-  // Comparators for sorting arrays of GeoObjects in a particular dimension
-  //
-  private static Comparator sDimensionComparators[] = { //
-      new Comparator<GeoObject>() {
-        @Override
-        public int compare(GeoObject o1, GeoObject o2) {
-          return Float.compare(o1.location().x, o2.location().x);
-        }
-      }, //
-      new Comparator<GeoObject>() {
-        @Override
-        public int compare(GeoObject o1, GeoObject o2) {
-          return Float.compare(o1.location().y, o2.location().y);
-        }
-      }, //
-      new Comparator<GeoObject>() {
-        @Override
-        public int compare(GeoObject o1, GeoObject o2) {
-          return Float.compare(o1.location().z, o2.location().z);
-        }
-      } };
 
   private void splitNode(GeoNode node, int dimension) {
     log("splitNode");
@@ -193,27 +129,15 @@ public final class GeoTree extends BaseObject {
     node.value = bisectLocation;
   }
 
-  public List<SearchResult> find(FPoint3 queryLoc, float radius) {
-    List<SearchResult> resultsList = arrayList();
-
+  public List<GeoSearchResult> find(FPoint3 queryLoc, float radius) {
+    List<GeoSearchResult> resultsList = arrayList();
     if (verbose())
       log("--------------------------------------------------------", CR, "find:", queryLoc);
-
     auxFind(resultsList, mRootNode, 0, queryLoc, radius * radius);
     return resultsList;
   }
 
-  /**
-   * Get the squared distance between three points
-   */
-  private static float distanceSq(FPoint3 a, FPoint3 b) {
-    float dx = a.x - b.x;
-    float dy = a.y - b.y;
-    float dz = a.z - b.z;
-    return dx * dx + dy * dy + dz * dz;
-  }
-
-  private void auxFind(List<SearchResult> results, GeoNode node, int depth, FPoint3 queryLoc,
+  private void auxFind(List<GeoSearchResult> results, GeoNode node, int depth, FPoint3 queryLoc,
       float squaredDistance) {
     if (verbose())
       log(spaces(depth * 2), "depth:", depth, "node:", node);
@@ -225,7 +149,7 @@ public final class GeoTree extends BaseObject {
         GeoObject c = node.points[i];
         float dist = distanceSq(queryLoc, c.location());
         if (dist <= squaredDistance)
-          results.add(new SearchResult(c, dist));
+          results.add(new GeoSearchResult(c, dist));
       }
     } else {
 
@@ -251,4 +175,51 @@ public final class GeoTree extends BaseObject {
 
   private GeoNode mRootNode = GeoNode.newLeafNode();
   private int mSize;
+
+  /**
+   * Get the squared distance between three points
+   */
+  private static float distanceSq(FPoint3 a, FPoint3 b) {
+    float dx = a.x - b.x;
+    float dy = a.y - b.y;
+    float dz = a.z - b.z;
+    return dx * dx + dy * dy + dz * dz;
+  }
+
+  /**
+   * Get a particular coordinate from a point
+   */
+  private static float coordinate(int dimension, FPoint3 location) {
+    switch (dimension) {
+    default: // 0 
+      return location.x;
+    case 1:
+      return location.y;
+    case 2:
+      return location.x;
+    }
+  }
+
+  // Comparators for sorting arrays of GeoObjects in a particular dimension
+  //
+  private static Comparator sDimensionComparators[] = { //
+      new Comparator<GeoObject>() {
+        @Override
+        public int compare(GeoObject o1, GeoObject o2) {
+          return Float.compare(o1.location().x, o2.location().x);
+        }
+      }, //
+      new Comparator<GeoObject>() {
+        @Override
+        public int compare(GeoObject o1, GeoObject o2) {
+          return Float.compare(o1.location().y, o2.location().y);
+        }
+      }, //
+      new Comparator<GeoObject>() {
+        @Override
+        public int compare(GeoObject o1, GeoObject o2) {
+          return Float.compare(o1.location().z, o2.location().z);
+        }
+      } };
+
 }
