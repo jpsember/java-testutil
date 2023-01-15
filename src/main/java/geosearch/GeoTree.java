@@ -28,6 +28,7 @@ public final class GeoTree extends BaseObject {
         log("adding to node");
         node.add(object);
         log("---------------------------------");
+        mSize++;
         break;
       } else {
         float targetC = coordinate(dimension, object.location());
@@ -46,6 +47,50 @@ public final class GeoTree extends BaseObject {
     }
   }
 
+  public boolean remove(GeoObject obj) {
+    int depth = 0;
+    int dimension = 0;
+    GeoNode node = mRootNode;
+
+    while (true) {
+      log("depth:", depth, "node:", node);
+      if (node.isLeaf()) {
+        int pop = node.population;
+        GeoObject[] pts = node.points;
+
+        for (int i = 0; i < pop; i++) {
+          GeoObject c = pts[i];
+          if (c == obj) {
+            node.removeObject(i);
+            mSize--;
+            return true;
+          }
+        }
+        return false;
+      }
+
+      float targetC = coordinate(dimension, obj.location());
+      if (targetC < node.value) {
+        log("descending left");
+        node = node.left;
+      } else {
+        log("descending right");
+        node = node.right;
+      }
+      depth++;
+      dimension++;
+      if (dimension == 3)
+        dimension = 0;
+    }
+  }
+
+  public int size() {
+    return mSize;
+  }
+
+  /**
+   * Get a particular coordinate from a point
+   */
   private static float coordinate(int dimension, FPoint3 location) {
     switch (dimension) {
     default: // 0 
@@ -86,7 +131,7 @@ public final class GeoTree extends BaseObject {
 
     // Choose median as bisector value
     Arrays.sort(obj, sDimensionComparators[dimension]);
-    int j = obj.length/2;
+    int j = obj.length / 2;
 
     float bisectLocation = coordinate(dimension, obj[j].location());
     log("bisector location:", bisectLocation);
@@ -108,12 +153,12 @@ public final class GeoTree extends BaseObject {
         right.add(x);
       }
     }
-    
+
     // If all the objects ended up in the same node, this is bad; it means the
     // coordinates were identical (at least in that one dimension)
     if (!shared)
       throw badArg("Multiple points had identical coordinates; perturb the inputs?");
-    
+
     node.left = left;
     node.right = right;
     node.points = null;
@@ -177,4 +222,5 @@ public final class GeoTree extends BaseObject {
   }
 
   private GeoNode mRootNode = GeoNode.newLeafNode();
+  private int mSize;
 }

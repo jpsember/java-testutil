@@ -5,11 +5,13 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import js.base.BasePrinter;
 import js.geometry.FPoint3;
 import js.geometry.MyMath;
 import js.json.JSMap;
 import js.testutil.MyTestCase;
 import static js.base.Tools.*;
+import static org.junit.Assert.*;
 
 public class GeoTreeTest extends MyTestCase {
 
@@ -58,6 +60,34 @@ public class GeoTreeTest extends MyTestCase {
     }
 
     assertMessage(m);
+  }
+
+  @Test
+  public void buildThenRemoveAll() {
+    BasePrinter p = new BasePrinter();
+    for (int i = 0; i < 50; i++) {
+      tree().add(randomObj());
+    }
+
+    p.pr("added 50 items");
+    p.pr(tree().dumpToString());
+    MyMath.permute(pts, random());
+
+    for (int i = 0; i < 50; i += 10) {
+      for (int j = i; j < i + 10; j++) {
+        boolean removed = tree().remove(pts.get(j));
+        checkState(removed);
+        removed = tree().remove(pts.get(j));
+        checkState(!removed);
+      }
+      p.pr("removed 10 items");
+      p.pr(tree().dumpToString());
+      assertEquals(40 - i, tree().size());
+    }
+    p.pr("after all removed");
+    p.pr(tree().dumpToString());
+    generateMessage(p);
+    assertGenerated();
   }
 
   @Test(expected = IllegalArgumentException.class)

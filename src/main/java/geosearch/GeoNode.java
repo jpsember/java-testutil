@@ -88,4 +88,14 @@ public final class GeoNode {
     }
   }
 
+  public void removeObject(int i) {
+    checkState(isLeaf());
+    while (i + 1 < population) {
+      points[i] = points[i + 1];
+      i++;
+    }
+    population--;
+    points[population] = null;
+  }
+
 }
