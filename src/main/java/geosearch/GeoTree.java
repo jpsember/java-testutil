@@ -52,6 +52,8 @@ public final class GeoTree extends BaseObject {
     int dimension = 0;
     GeoNode node = mRootNode;
 
+    GeoNode parentNode = null;
+
     while (true) {
       log("depth:", depth, "node:", node);
       if (node.isLeaf()) {
@@ -63,12 +65,38 @@ public final class GeoTree extends BaseObject {
           if (c == obj) {
             node.removeObject(i);
             mSize--;
+
+            // If there is a parent node, and the population of this node has dropped to zero,
+            // replace the parent node with this one's sibling
+            
+            // !!! This won't work, since the bisector property that the sibling points have
+            // won't agree with the dimensionality of the parent node that they are moving to.
+            //
+            
+            if (node.population == 0 && parentNode != null) {
+              GeoNode sibling = parentNode.left;
+              if (sibling == node)
+                sibling = parentNode.right;
+              
+              pr("node is now empty:"
+                  ,node);
+              pr("parent:",parentNode);
+              pr("sibling:",sibling);
+              parentNode.left = sibling.left;
+              parentNode.right = sibling.right;
+              parentNode.population = sibling.population;
+              parentNode.points = sibling.points;
+              parentNode.value = sibling.value;
+              parentNode.debugId = sibling.debugId;
+              pr("parent now:",parentNode);
+                }
             return true;
           }
         }
         return false;
       }
 
+      parentNode = node;
       float targetC = coordinate(dimension, obj.location());
       if (targetC < node.value) {
         log("descending left");
