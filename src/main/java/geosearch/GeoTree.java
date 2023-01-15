@@ -2,8 +2,9 @@ package geosearch;
 
 import static js.base.Tools.*;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 
 import js.base.BaseObject;
 import js.geometry.FPoint3;
@@ -56,41 +57,63 @@ public final class GeoTree extends BaseObject {
     }
   }
 
-  private void splitNode(GeoNode node, int dimension) {
+  // Comparators for sorting arrays of GeoObjects in a particular dimension
+  //
+  private static Comparator sDimensionComparators[] = { //
+      new Comparator<GeoObject>() {
+        @Override
+        public int compare(GeoObject o1, GeoObject o2) {
+          return Float.compare(o1.location().x, o2.location().x);
+        }
+      }, //
+      new Comparator<GeoObject>() {
+        @Override
+        public int compare(GeoObject o1, GeoObject o2) {
+          return Float.compare(o1.location().y, o2.location().y);
+        }
+      }, //
+      new Comparator<GeoObject>() {
+        @Override
+        public int compare(GeoObject o1, GeoObject o2) {
+          return Float.compare(o1.location().z, o2.location().z);
+        }
+      } };
 
+  private void splitNode(GeoNode node, int dimension) {
     log("splitNode");
-    loadTools();
 
     GeoObject[] obj = node.points;
 
-    // Choose bisector point
-    int j = mRandom.nextInt(obj.length);
+    // Choose median as bisector value
+    Arrays.sort(obj, sDimensionComparators[dimension]);
+    int j = obj.length/2;
 
     float bisectLocation = coordinate(dimension, obj[j].location());
     log("bisector location:", bisectLocation);
-    todo("choose bisector point as one closest to mean");
 
     GeoNode left = GeoNode.newLeafNode();
     GeoNode right = GeoNode.newLeafNode();
 
+    boolean shared = false;
     for (GeoObject x : obj) {
       float objLocation = coordinate(dimension, x.location());
-
       float diff = objLocation - bisectLocation;
-      if (diff == 0) {
-        // place in node with smaller population
-        if (left.points.length < right.points.length)
-          diff = -1;
-      }
       log("moving object to child node, location:", objLocation);
       if (diff < 0) {
         log("adding to left");
         left.add(x);
+        shared = true;
       } else {
         log("adding to right");
         right.add(x);
       }
     }
+    
+    // If all the objects ended up in the same node, this is bad; it means the
+    // coordinates were identical (at least in that one dimension)
+    if (!shared)
+      throw badArg("Multiple points had identical coordinates; perturb the inputs?");
+    
     node.left = left;
     node.right = right;
     node.points = null;
@@ -125,7 +148,7 @@ public final class GeoTree extends BaseObject {
     int dimension = depth % 3;
 
     if (node.isLeaf()) {
-      for (int i = 0; i < node.pop; i++) {
+      for (int i = 0; i < node.population; i++) {
         GeoObject c = node.points[i];
         float dist = distanceSq(queryLoc, c.location());
         if (dist <= squaredDistance)
@@ -154,5 +177,4 @@ public final class GeoTree extends BaseObject {
   }
 
   private GeoNode mRootNode = GeoNode.newLeafNode();
-  private Random mRandom = new Random(1966);
 }

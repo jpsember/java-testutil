@@ -17,7 +17,7 @@ public class GeoTreeTest extends MyTestCase {
 
   @Test
   public void buildThenFind() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 50; i++) {
       tree().add(randomObj());
       if (verbose())
         pr(tree().dumpToString());
@@ -58,6 +58,16 @@ public class GeoTreeTest extends MyTestCase {
     }
 
     assertMessage(m);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void sameCoordinatesFailure() {
+    for (int i = 0; i < 50; i++) {
+      FPoint3 p = randomPoint();
+      p = new FPoint3(p.x, 42, p.z);
+      GeoObject obj = new OurObj(p);
+      tree().add(obj);
+    }
   }
 
   private static String summary(Iterable<SearchResult> res) {

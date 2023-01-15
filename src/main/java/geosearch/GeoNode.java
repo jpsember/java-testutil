@@ -4,23 +4,16 @@ import static js.base.Tools.*;
 
 public final class GeoNode {
 
-  private GeoNode() {
-    if (sNextDebugId > 300)
-      badArg("infinite loop?");
-  }
-
   public static GeoNode newLeafNode() {
     GeoNode n = new GeoNode();
     n.points = new GeoObject[CAPACITY];
     return n;
   }
 
-  public static GeoNode newInternalNode() {
-    GeoNode n = new GeoNode();
-    return n;
+  private GeoNode() {
   }
 
-  private static final int CAPACITY = 4;
+  private static final int CAPACITY = 10;
 
   private static int sNextDebugId = 100;
 
@@ -28,7 +21,7 @@ public final class GeoNode {
   float value;
   GeoNode left;
   GeoNode right;
-  int pop;
+  int population;
   GeoObject[] points;
 
   public boolean isLeaf() {
@@ -37,13 +30,13 @@ public final class GeoNode {
 
   public boolean isFull() {
     checkState(isLeaf());
-    return pop == CAPACITY;
+    return population == CAPACITY;
   }
 
   public void add(GeoObject object) {
-    checkState(pop < CAPACITY);
-    points[pop] = object;
-    pop++;
+    checkState(population < CAPACITY);
+    points[population] = object;
+    population++;
   }
 
   public String toString() {
@@ -55,10 +48,11 @@ public final class GeoNode {
     if (isLeaf()) {
       sb.append("leaf     ");
       sb.append("pop:");
-      sb.append(pop);
+      sb.append(population);
       sb.append(" [");
-      for (int k = 0; k<pop ;k++) {
-        if (k > 0) sb.append(", ");
+      for (int k = 0; k < population; k++) {
+        if (k > 0)
+          sb.append(", ");
         GeoObject n = points[k];
         sb.append(n.location());
       }
