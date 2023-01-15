@@ -14,13 +14,14 @@ public final class GeoTree extends BaseObject {
     log("add:", object.location());
 
     int depth = 0;
+    int dimension = 0;
     GeoNode node = mRootNode;
 
     while (true) {
       log("depth:", depth, "node:", node);
       if (node.isLeaf()) {
         if (node.isFull()) {
-          splitNode(node, depth);
+          splitNode(node, dimension);
           continue;
         }
         log("adding to node");
@@ -28,7 +29,7 @@ public final class GeoTree extends BaseObject {
         log("---------------------------------");
         break;
       } else {
-        float targetC = coord(depth, object.location());
+        float targetC = coordinate(dimension, object.location());
         if (targetC < node.value) {
           log("descending left");
           node = node.left;
@@ -37,12 +38,15 @@ public final class GeoTree extends BaseObject {
           node = node.right;
         }
         depth++;
+        dimension++;
+        if (dimension == 3)
+          dimension = 0;
       }
     }
   }
 
-  private static float coord(int depth, FPoint3 location) {
-    switch (depth % 3) {
+  private static float coordinate(int dimension, FPoint3 location) {
+    switch (dimension) {
     default: // 0 
       return location.x;
     case 1:
@@ -52,7 +56,7 @@ public final class GeoTree extends BaseObject {
     }
   }
 
-  private void splitNode(GeoNode node, int depth) {
+  private void splitNode(GeoNode node, int dimension) {
 
     log("splitNode");
     loadTools();
@@ -62,7 +66,7 @@ public final class GeoTree extends BaseObject {
     // Choose bisector point
     int j = mRandom.nextInt(obj.length);
 
-    float bisectLocation = coord(depth, obj[j].location());
+    float bisectLocation = coordinate(dimension, obj[j].location());
     log("bisector location:", bisectLocation);
     todo("choose bisector point as one closest to mean");
 
@@ -70,7 +74,7 @@ public final class GeoTree extends BaseObject {
     GeoNode right = GeoNode.newLeafNode();
 
     for (GeoObject x : obj) {
-      float objLocation = coord(depth, x.location());
+      float objLocation = coordinate(dimension, x.location());
 
       float diff = objLocation - bisectLocation;
       if (diff == 0) {
@@ -103,6 +107,9 @@ public final class GeoTree extends BaseObject {
     return resultsList;
   }
 
+  /**
+   * Get the squared distance between three points
+   */
   private static float distanceSq(FPoint3 a, FPoint3 b) {
     float dx = a.x - b.x;
     float dy = a.y - b.y;
@@ -115,6 +122,8 @@ public final class GeoTree extends BaseObject {
     if (verbose())
       log(spaces(depth * 2), "depth:", depth, "node:", node);
 
+    int dimension = depth % 3;
+
     if (node.isLeaf()) {
       for (int i = 0; i < node.pop; i++) {
         GeoObject c = node.points[i];
@@ -124,7 +133,7 @@ public final class GeoTree extends BaseObject {
       }
     } else {
 
-      float coord = coord(depth, queryLoc);
+      float coord = coordinate(dimension, queryLoc);
       float delta = coord - node.value;
 
       // If within a minimum distance of the bisector, search both subtrees
