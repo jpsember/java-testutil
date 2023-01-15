@@ -2,18 +2,15 @@ package geosearch;
 
 import static js.base.Tools.*;
 
+import java.util.List;
 import java.util.Random;
 
 import js.base.BaseObject;
 import js.geometry.FPoint3;
-import js.geometry.MyMath;
 
 public final class GeoTree extends BaseObject {
 
-  public static final float SEARCH_RADIUS = 20;
-
   public void add(GeoObject object) {
-
     log("add:", object.location());
 
     int depth = 0;
@@ -31,9 +28,7 @@ public final class GeoTree extends BaseObject {
         log("---------------------------------");
         break;
       } else {
-
         float targetC = coord(depth, object.location());
-
         if (targetC < node.value) {
           log("descending left");
           node = node.left;
@@ -98,13 +93,14 @@ public final class GeoTree extends BaseObject {
     node.value = bisectLocation;
   }
 
-  public GeoObject find(FPoint3 queryLoc) {
-    SearchResult nullResult = new SearchResult(null, SEARCH_RADIUS);
+  public List<SearchResult> find(FPoint3 queryLoc, float radius) {
+    List<SearchResult> resultsList = arrayList();
+
     if (verbose())
       log("--------------------------------------------------------", CR, "find:", queryLoc);
 
-    SearchResult findResult = auxFind(mRootNode, 0, queryLoc, nullResult);
-    return findResult.object;
+    auxFind(resultsList, mRootNode, 0, queryLoc, radius * radius);
+    return resultsList;
   }
 
   private static float distanceSq(FPoint3 a, FPoint3 b) {
@@ -114,39 +110,17 @@ public final class GeoTree extends BaseObject {
     return dx * dx + dy * dy + dz * dz;
   }
 
-  private static class SearchResult {
-    SearchResult(GeoObject obj, float dist) {
-      object = obj;
-      distance = dist;
-    }
-
-    final GeoObject object;
-    final float distance;
-
-    public String toString() {
-      StringBuilder sb = new StringBuilder("<");
-      if (object == null)
-        sb.append("null");
-      else
-        sb.append(object.location());
-      sb.append(" dist:");
-      sb.append((int) MyMath.sqrtf(distance));
-      sb.append(">");
-      return sb.toString();
-    }
-  }
-
-  private SearchResult auxFind(GeoNode node, int depth, FPoint3 queryLoc, SearchResult bestResult) {
+  private void auxFind(List<SearchResult> results, GeoNode node, int depth, FPoint3 queryLoc,
+      float squaredDistance) {
     if (verbose())
-      log(spaces(depth * 2), "depth:", depth, "node:", node, "best:", bestResult);
+      log(spaces(depth * 2), "depth:", depth, "node:", node);
 
     if (node.isLeaf()) {
       for (int i = 0; i < node.pop; i++) {
         GeoObject c = node.points[i];
         float dist = distanceSq(queryLoc, c.location());
-        if (dist < bestResult.distance) {
-          bestResult = new SearchResult(c, dist);
-        }
+        if (dist <= squaredDistance)
+          results.add(new SearchResult(c, dist));
       }
     } else {
 
@@ -154,17 +128,16 @@ public final class GeoTree extends BaseObject {
       float delta = coord - node.value;
 
       // If within a minimum distance of the bisector, search both subtrees
-      if (Math.abs(delta) < bestResult.distance) {
-        bestResult = auxFind(node.left, depth + 1, queryLoc, bestResult);
-        bestResult = auxFind(node.right, depth + 1, queryLoc, bestResult);
+      if (delta * delta <= squaredDistance) {
+        auxFind(results, node.left, depth + 1, queryLoc, squaredDistance);
+        auxFind(results, node.right, depth + 1, queryLoc, squaredDistance);
       } else if (delta < 0) {
-        bestResult = auxFind(node.left, depth + 1, queryLoc, bestResult);
+        auxFind(results, node.left, depth + 1, queryLoc, squaredDistance);
       } else
-        bestResult = auxFind(node.right, depth + 1, queryLoc, bestResult);
+        auxFind(results, node.right, depth + 1, queryLoc, squaredDistance);
     }
     if (verbose())
-      log(spaces(depth * 2), "result:", bestResult);
-    return bestResult;
+      log(spaces(depth * 2), "results:", results);
   }
 
   public String dumpToString() {
