@@ -1,7 +1,5 @@
 package geosearch;
 
-import js.geometry.MyMath;
-
 public final class GeoSearchResult {
 
   GeoSearchResult(GeoObject obj, float dist) {
