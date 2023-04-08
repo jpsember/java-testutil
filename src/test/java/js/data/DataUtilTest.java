@@ -27,6 +27,9 @@ package js.data;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -126,4 +129,33 @@ public class DataUtilTest extends MyTestCase {
     assertEquals("fffb9d2ac3754540", sb.toString());
   }
 
+  @Test
+  public void repeatedUnmodifiableLists() {
+    List<String> a = arrayList();
+    a.add("hello");
+    List<String> a2 = DataUtil.immutableCopyOf(a);
+    assertNotSame(a2, a);
+    List<String> a3 = DataUtil.immutableCopyOf(a2);
+    assertSame(a2, a3);
+  }
+
+  @Test
+  public void repeatedUnmodifiableMaps() {
+    Map<String, String> a = hashMap();
+    a.put("hello", "jim");
+    Map<String, String> a2 = DataUtil.immutableCopyOf(a);
+    assertNotSame(a2, a);
+    Map<String, String> a3 = DataUtil.immutableCopyOf(a2);
+    assertSame(a2, a3);
+  }
+
+  @Test
+  public void repeatedUnmodifiableSets() {
+    Set<String> a = hashSet();
+    a.add("hello");
+    Set<String> a2 = DataUtil.immutableCopyOf(a);
+    assertNotSame(a2, a);
+    Set<String> a3 = DataUtil.immutableCopyOf(a2);
+    assertSame(a2, a3);
+  }
 }
