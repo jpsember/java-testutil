@@ -124,6 +124,9 @@ final class FileManager {
           && Arrays.equals(Files.toByteArray(fileRecAbs, null), Files.toByteArray(fileRefAbs, null)))
         continue;
 
+      if (!mUnitTest.verbose())
+        continue;
+
       pr(CR,
           "------------------------------------------------------------------------------------------------");
       pr(fileReceived);
@@ -143,8 +146,6 @@ final class FileManager {
       String ext = Files.getExtension(fileReceived);
 
       boolean isTextFile = sTextFileExtensions.contains(ext);
-      if (!mUnitTest.verbose())
-        continue;
 
       SystemCall sc = new SystemCall().arg("diff");
       if (isTextFile)

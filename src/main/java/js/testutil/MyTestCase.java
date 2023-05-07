@@ -259,12 +259,7 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
   public final void generateMessage(Object messageObject) {
     String text = messageObject.toString();
     if (verbose()) {
-      StringBuilder q = new StringBuilder();
-      for (String s : split(text, '\n')) {
-        q.append("\u21e8 ");
-        q.append(s);
-        q.append("\u21e6\n");
-      }
+      String q = insertLeftRightMargins(text);
       log(CR, "Content:", INDENT, q);
     }
     generateMessage(GENERATED_MESSAGE_NAME, text);
@@ -505,7 +500,7 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
     return new File(sourceDirectory.getParentFile(), sourceDirectory.getName() + "_REF");
   }
 
-  private static final Set<String> sTextFileExtensions = hashSetWith(Files.EXT_TEXT,Files.EXT_JSON);
+  private static final Set<String> sTextFileExtensions = hashSetWith(Files.EXT_TEXT, Files.EXT_JSON);
 
   public static void showDiffs(File directory, boolean extended) {
     Set<File> relFiles = hashSet();
