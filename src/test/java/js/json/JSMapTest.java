@@ -35,15 +35,6 @@ import js.testutil.MyTestCase;
 public class JSMapTest extends MyTestCase {
 
   @Test
-  public void wtf() {
-    JSMap m = map();
-    m.put("name", "John");
-    m.put("age", 30);
-    m.put("hobbies", list().add("swimming").add("coding"));
-    pr(m);
-  }
-
-  @Test
   public void prettyPrintTest() {
     StringBuilder sb = new StringBuilder();
     JSMap m = new JSMap();
@@ -100,4 +91,5 @@ public class JSMapTest extends MyTestCase {
     JSMap m4 = map().put("m", m2);
     assertEquals(m3, m4);
   }
+  
 }

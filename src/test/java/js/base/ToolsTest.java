@@ -99,21 +99,29 @@ public class ToolsTest extends MyTestCase {
 
   @Test
   public void camelCaseTest() {
-    String s = "js.Base.ToolsTest.java";
-    assertEquals("js.base.tools_test.java", convertCamelToUnderscore(s));
+    String s2 = "js.base.tools_test.java";
+    String s1 = "js.Base.ToolsTest.java";
+    assertEquals(s2, convertCamelToUnderscore(s1));
+  }
+
+  @Test
+  public void fromCamelCaseTest() {
+    String s1 = "alpha.charlie_bravo_delta";
+    String s2 = "Alpha.charlieBravoDelta";
+    assertEquals(s2, convertUnderscoreToCamel(s1));
   }
 
   @Test
   public void nullOrEmptyTest() {
     assertFalse(nullOrEmpty("abc"));
-    assertTrue(nullOrEmpty((String)null));
+    assertTrue(nullOrEmpty((String) null));
     assertTrue(nullOrEmpty(""));
   }
 
   @Test
   public void nonEmptyTest() {
     assertTrue(nonEmpty("abc"));
-    assertFalse(nonEmpty((String)null));
+    assertFalse(nonEmpty((String) null));
     assertFalse(nonEmpty(""));
   }
 
