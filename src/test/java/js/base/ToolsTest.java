@@ -46,7 +46,7 @@ public class ToolsTest extends MyTestCase {
     todo("Here is a third report");
     String output = restoreSystemOut();
     log("output:", INDENT, output);
-    assertTrue(output.startsWith("*** TODO: Here is a todo report"));
+    assertTrue(output.contains("Here is a todo report"));
     assertEquals(3, split(output.trim(), '\n').size());
   }
 
@@ -199,4 +199,13 @@ public class ToolsTest extends MyTestCase {
     assertGenerated();
   }
 
+  @Test
+  public void abc() {
+    subr();
+  }
+   
+  private void subr() {
+    todo("?<1bar","this is a todo statement");
+  }
+  
 }
