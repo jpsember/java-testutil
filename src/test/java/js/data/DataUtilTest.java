@@ -24,8 +24,10 @@
  **/
 package js.data;
 
+import static js.base.Tools.*;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +35,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import js.json.JSList;
 import js.testutil.MyTestCase;
-import static js.base.Tools.*;
 
 public class DataUtilTest extends MyTestCase {
 
@@ -158,4 +160,15 @@ public class DataUtilTest extends MyTestCase {
     Set<String> a3 = DataUtil.immutableCopyOf(a2);
     assertSame(a2, a3);
   }
+
+  @Test
+  public void arrayNumbers() {
+    var src = new ArrayList<Double>();
+    src.add(1.2);
+    src.add(1.7);
+    src.add(-3.2);
+    var x = DataUtil.intArray(src);
+    assertMessage(JSList.with(x));
+  }
+
 }
