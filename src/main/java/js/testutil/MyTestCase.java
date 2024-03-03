@@ -230,7 +230,11 @@ public abstract class MyTestCase extends BaseObject implements LoggerInterface {
   // Generated directory
   // ------------------------------------------------------------------
 
-  private FileManager fileManager() {
+  public final void setGeneratedDir(File dir) {
+    fileManager().setGeneratedDir(dir);
+  }
+
+  protected FileManager fileManager() {
     if (mFileManager == null)
       mFileManager = new FileManager(this);
     return mFileManager;

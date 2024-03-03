@@ -48,6 +48,15 @@ final class FileManager {
     mUnitTest = unitTest;
   }
 
+  /**
+   * Set a generated directory that is in a nonstandard location
+   */
+  public void setGeneratedDir(File dir) {
+    checkState(mGeneratedDir == null);
+    Files.assertDirectoryExists(dir);
+    mGeneratedDir = dir;
+  }
+
   public File generatedDir() {
     if (mGeneratedDir == null) {
       File unitTestDir = UNIT_TEST_DIRECTORY.getAbsoluteFile();
