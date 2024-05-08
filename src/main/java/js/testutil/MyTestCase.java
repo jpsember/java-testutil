@@ -50,7 +50,6 @@ import js.file.FileException;
 import js.file.Files;
 import js.json.JSMap;
 import js.json.JSObject;
-import js.system.SystemUtil;
 
 /**
  * Base class for our unit tests.
@@ -59,17 +58,6 @@ import js.system.SystemUtil;
  */
 @RunWith(MyTestRunner.class)
 public abstract class MyTestCase extends BaseObject implements LoggerInterface {
-
-  public MyTestCase() {
-    // When running a unit test that uses Java's BufferedImage class,
-    // OSX adds an icon to the menu bar (temporarily);
-    //
-    // new BufferedImage(320,256,BufferedImage.TYPE_INT_ARGB);
-    //
-    // ...to prevent this, ensure we're in 'headless' mode
-    //
-    SystemUtil.setConsoleAppFlag(true);
-  }
 
   @Before
   public void setup() {
