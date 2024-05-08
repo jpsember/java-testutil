@@ -26,10 +26,12 @@ package js.base;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
 
+import js.file.Files;
 import js.json.JSMap;
 import js.testutil.MyTestCase;
 
@@ -203,9 +205,36 @@ public class ToolsTest extends MyTestCase {
   public void abc() {
     subr();
   }
-   
-  private void subr() {
-    todo("?<1bar","this is a todo statement");
+
+  @Test
+  public void alerts() {
+
+    // This test is useful for debugging things, but shouldn't be run regularly
+    if (true)
+      return;
+
+    // The alert keys can have one or more prefixes of the form:
+    //
+    //-              Never print
+    //!          Print about once per day
+    //?              Print about once per month
+    //#[0-9]+              Print n times, every time program is run
+    //<[0-9]+              Skip first n entries in stack trace
+    //
+
+    var d = new File("_SKIP_project_dir");
+    Files.S.mkdirs(d);
+    Files.S.setProjectDirectory(d);
+    redirectSystemOut();
+    alert("!once per day two");
+
+    String output = restoreSystemOut();
+    log("output:", INDENT, output);
+    assertTrue(output.contains("once per day"));
   }
-  
+
+  private void subr() {
+    todo("?<1bar", "this is a todo statement");
+  }
+
 }
