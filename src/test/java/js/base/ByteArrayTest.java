@@ -31,6 +31,7 @@ import js.json.JSList;
 import js.json.JSObject;
 import js.testutil.MyTestCase;
 
+
 import static js.base.Tools.*;
 import static org.junit.Assert.*;
 
@@ -39,6 +40,7 @@ public class ByteArrayTest extends MyTestCase {
   @Test
   public void defaultArray() {
     loadTools();
+    //var x = FileUtils.getUserDirectory();
     assertMessage(bytesAsInts(ByteArray.DEFAULT_INSTANCE.array()));
   }
 

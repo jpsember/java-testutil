@@ -60,7 +60,7 @@ import js.system.SystemUtil;
 @RunWith(MyTestRunner.class)
 public abstract class MyTestCase extends BaseObject implements LoggerInterface {
 
-  static {
+  public MyTestCase() {
     // When running a unit test that uses Java's BufferedImage class,
     // OSX adds an icon to the menu bar (temporarily);
     //
