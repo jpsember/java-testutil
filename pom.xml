@@ -3,7 +3,7 @@
 
   <groupId>com.jsbase</groupId>
   <artifactId>java-testutil</artifactId>
-  <version>1000</version>
+  <version>1.0</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
