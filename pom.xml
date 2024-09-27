@@ -45,7 +45,7 @@
     <dependency>
       <groupId>com.jsbase</groupId>
       <artifactId>java-core</artifactId>
-      <version>1000</version>
+      <version>3.1</version>
     </dependency>
 
     <dependency>
