@@ -2,8 +2,6 @@
   "entries" : [
     {
       "repo_name":"jpsember/java-core",
-      "commit_hash":"2f1b5c6",
-      "version":"3.1",
     },
   ],
 }
