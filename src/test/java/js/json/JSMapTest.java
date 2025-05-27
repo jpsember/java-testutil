@@ -35,12 +35,10 @@ public class JSMapTest extends MyTestCase {
 
   @Test
   public void parseMapWithComments() {
-    if (false) {
-      // Apparently my JSON parser doesn't allow comments?
-      var s = " # This is a comment\n { \"alpha\" : [1,2,3] } # another comment\n";
-      var mp = new JSMap(s);
-      pr(mp);
-    }
+    // Apparently my JSON parser doesn't allow comments?
+    var s = " # This is a comment\n { \"alpha\" : [1,2,3] } # another comment\n";
+    var mp = new JSMap(s);
+    generateMessage(mp);
   }
 
   @Test
@@ -66,6 +64,13 @@ public class JSMapTest extends MyTestCase {
     JSMap m = new JSMap();
     Matrix mx = Matrix.getScale(2f, 1f);
     m.put("matrix", mx);
+    assertMessage(m);
+  }
+
+  @Test
+  public void emptyMap() {
+    String content = "{}";
+    JSMap m = new JSMap(content);
     assertMessage(m);
   }
 

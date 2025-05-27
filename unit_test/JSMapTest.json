@@ -1,4 +1,5 @@
-{ "parseMapTrailingCommas" : 1515,
+{               "emptyMap" : 3327,
+  "parseMapTrailingCommas" : 1515,
      "parseNullValueInMap" : 8844,
          "prettyPrintTest" : 7252,
           "putDataObjects" : 6953
