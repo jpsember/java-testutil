@@ -242,7 +242,10 @@ public final class MyTestUtils {
   private static void installHashFunctions() {
     Files.registerFiletypeHashFn(Files.EXT_TEXT, (f) -> Files.readString(f));
     Files.registerFiletypeHashFn(Files.EXT_JSON, (f) -> {
-      return JSMap.from(f);
+      // Read the map as a text file, so (assuming it's been pretty printed,
+      // with alphabetically sorted keys) we don't run into problems with
+      // nondeterministic ordering of unsorted keys
+      return Files.readString(f);
     });
     Files.registerFiletypeHashFn(Files.EXT_ZIP, (f) -> calcHashForZip(f));
     // Attempt to load classes (which may not be available) so they can install 
