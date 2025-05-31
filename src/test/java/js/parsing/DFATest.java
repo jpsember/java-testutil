@@ -13,8 +13,9 @@ public class DFATest extends MyTestCase {
   @Test
   public void describe() {
     loadTools();
-    var dfa = JSUtils.JSON_DFA;
-    generateMessage(dfa.describe().prettyPrint());
+//    var dfa = JSUtils.JSON_DFA;
+//    generateMessage(dfa.describe().prettyPrint());
+    todo("reinstate the describe() method with the new compact dfa");
   }
 
 }
