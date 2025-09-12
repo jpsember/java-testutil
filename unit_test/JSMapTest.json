@@ -2,5 +2,6 @@
   "parseMapTrailingCommas" : 1515,
      "parseNullValueInMap" : 8844,
          "prettyPrintTest" : 7252,
+      "problemWithUnicode" : 1294,
           "putDataObjects" : 6953
 }
