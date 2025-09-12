@@ -113,4 +113,17 @@ public class JSMapTest extends MyTestCase {
     assertEquals(m3, m4);
   }
 
+  @Test
+  public void problemWithUnicode() {
+    String[] samples = {
+        "\"\\u001b[31m-------\\u001b[39m\"",
+    };
+    var result = map();
+    for (var s : samples) {
+      log(s);
+      var x = JSUtils.parseStringFrom(s);
+      result.putNumbered(x);
+    }
+    assertMessage(result);
+  }
 }
